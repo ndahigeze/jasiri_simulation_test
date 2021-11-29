@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+ <head>
+      <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="Start your development with a Dashboard for Bootstrap 4.">
+  <meta name="author" content="Creative Tim">
+  <title>
+      IMS-{% block title %}{% endblock %}
+  </title>
+  {% load static %}
+  <link rel="icon" href="{% static '/img/brand/favicon.png' %}" type="image/png">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700">
+  <link rel="stylesheet" href="{% static '/vendor/nucleo/css/nucleo.css '%}" type="text/css">
+  <link rel="stylesheet" href="{% static '/vendor/@fortawesome/fontawesome-free/css/all.min.css'%}" type="text/css">
+  <link rel="stylesheet" href="{% static '/css/argon.css' %}" type="text/css">
+  <link rel="stylesheet" href="{% static '/css/intlTelInput.css'%}">
+
+
+ <script src="{% static '/vendor/jquery/dist/jquery.min.js' %}"></script>
+   <script src="{% static '/vendor/bootstrap/dist/js/bootstrap.bundle.min.js'%}"></script>
+   <script src="{% static '/vendor/js-cookie/js.cookie.js'%}"></script>
+   <script src="{% static '/vendor/jquery.scrollbar/jquery.scrollbar.min.js'%}"></script>
+   <script src="{% static '/vendor/jquery-scroll-lock/dist/jquery-scrollLock.min.js'%}"></script>
+   <script src="{% static '/js/argon.js'%}"></script>
+   <script src="{% static '/js/demo.min.js'%}"></script>
+   <script src="{% static '/js/intlTelInput.js' %}"></script>
+   <script src="{% static '/js/custom.js' %}"></script>
+
+     <script src="https://unpkg.com/vue-select@latest"></script>
+       <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+      <script src="{% static '/js/axios.min.js' %}"></script>
+ <script src="https://unpkg.com/vue-select@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+ </head>
+  <body>
+      <nav id="navbar-main" class="navbar navbar-horizontal navbar-main navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+          <a class="navbar-brand" href="/">
+            <h2>JASIRI_SIMULATION_TEST</h2>
+          </a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapse" aria-controls="navbar-collapse" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="navbar-collapse navbar-custom-collapse collapse" id="navbar-collapse">
+            <div class="navbar-collapse-header">
+              <div class="row">
+                <div class="col-6 collapse-brand">
+                  <a href="./pages/dashboards/dashboard.html">
+                    <img src="./assets/img/brand/blue.png">
+                  </a>
+                </div>
+                <div class="col-6 collapse-close">
+                  <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbar-collapse" aria-controls="navbar-collapse" aria-expanded="false" aria-label="Toggle navigation">
+                    <span></span>
+                    <span></span>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <ul class="navbar-nav mr-auto">
+
+              <li class="nav-item">
+                <a href="{% url 'accounts:login' %}" class="nav-link">
+                  <span class="nav-link-inner--text">Login</span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{% url 'accounts:signup' %}" class="nav-link">
+                  <span class="nav-link-inner--text">Register</span>
+                </a>
+              </li>
+            </ul>
+            <hr class="d-lg-none" />
+
+          </div>
+        </div>
+      </nav>
+      <div class="main-content">
+           {% block home_content %}
+
+            {% endblock %}
+      </div>
+
+   {# javascript files #}
+
+  {% block script %}
+  {% endblock script %}
+
+ </body>
+</html>

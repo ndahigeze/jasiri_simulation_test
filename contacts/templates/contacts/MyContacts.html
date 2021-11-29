@@ -1,0 +1,417 @@
+{% extends 'home_layout.html' %}
+{% block title %}MY CONTACTS{% endblock %}
+{% block home_content %}
+    <div class="container-fluid pb-5  py-2" id="main_content">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h4>My contacts</h4>
+                        <hr/>
+                        <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#new-contact" @click="update=false">New Contacts</button>
+                        <div class="table-responsive mt-3">
+                            <table class="table table-hover" id="contact_table">
+                                <thead>
+                                  <th>Name</th>
+                                  <th>Action</th>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="cont in contacts">
+                                        <td>[[cont.firstName]] [[cont.lastName]]</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-info" @click="details(cont)"><em class="fa fa-eye"></em></button>
+                                            <button class="btn btn-sm btn-primary"><em class="fa fa-edit" @click="editContact(cont)"></em></button>
+                                            <button class="btn btn-sm btn-warning"><em class="fa fa-trash" @click="deleteContact(cont)"></em></button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-body">
+                        <h3>Selected Contact: [[selected_contact.firstName]] [[selected_contact.lastName]]</h3>
+                        <hr/>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h4>Contact numbers</h4>
+                                <button class="btn btn-sm btn-primary" @click="trigerAddPhone">Add Contact Number</button>
+                                <div class="table table-responsive">
+                                    <table class="table table-hover">
+                                        <tbody>
+                                           <tr v-for="phone in phone_numbers">
+                                               <td>[[phone.phone]]</td>
+                                           </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <h4>Contact emails</h4>
+                                <button class="btn btn-sm btn-primary" @click="trigerAddEmail">Add Contact Email</button>
+                                <div class="table table-responsive">
+                                    <table class="table table-hover">
+                                        <tbody>
+                                           <tr v-for="email in emails">
+                                               <td>[[email.email]]</td>
+                                           </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+{#    modasl#}
+<!--  saving or updating contact modal  -->
+    <div class="modal fade" id="new-contact" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body p-0">
+                    <div class="card bg-secondary border-0 mb-0">
+                         <div class="card-header">
+                           <h1 v-if="!update">Create contact</h1>
+                            <h1 v-if="update">Update contact</h1>
+                        </div>
+                        <div class="card-body px-lg-5 py-lg-5">
+                            <div class="form-group mb-3">
+                              <div class="form-group">
+                                   <label for="fname">First Name</label>
+                                   <input type="text" class="form-control" id="fname" v-model="post_contact_data.firstName">
+                                  <span class="text-warning">[[ contact_error.firstName[0] ]]</span>
+                              </div>
+                            </div>
+                            <div class="form-group mb-3">
+                              <div class="form-group">
+                                   <label for="lname">Last Name</label>
+                                   <input type="text" class="form-control" id="lname" v-model="post_contact_data.lastName">
+                                   <span class="text-warning">[[ contact_error.lastName[0] ]]</span>
+                              </div>
+                            </div>
+                            <div class="form-group mb-3">
+                                <button class="btn btn-primary" @click="createContact" v-if="!update">Submit</button>
+                                <button class="btn btn-primary" @click="confirmEdit" v-if="update">Submit</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<!--        Modal for adding contact number-->
+    <div class="modal fade" id="new-phone" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body p-0">
+                    <div class="card bg-secondary border-0 mb-0">
+                         <div class="card-header">
+                           <h1 v-if="!update">Add contact number</h1>
+                        </div>
+                        <div class="card-body px-lg-5 py-lg-5">
+                            <div class="form-group mb-3">
+                              <div class="form-group">
+                                   <label for="fname">Phone Number</label>
+                                   <input type="text" class="form-control" id="cphone" v-model="phone_post_data.phone">
+                              </div>
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <button class="btn btn-primary" @click="createPhone" >Submit</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<!--        modal for adding new contact email-->
+        <div class="modal fade" id="new-email" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body p-0">
+                    <div class="card bg-secondary border-0 mb-0">
+                         <div class="card-header">
+                           <h1 v-if="!update">Add contact Email</h1>
+                        </div>
+                        <div class="card-body px-lg-5 py-lg-5">
+                            <div class="form-group mb-3">
+                              <div class="form-group">
+                                   <label for="fname">Phone email</label>
+                                   <input type="email" class="form-control" id="cemail" v-model="email_post_data.email">
+                              </div>
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <button class="btn btn-primary" @click="createEmail" >Submit</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    </div>
+    <script>
+       var app=new Vue({
+            el: '#main_content',
+            delimiters: ['[[', ']]'],
+            data:{
+                contacts:[],
+                selected_contact:{},
+                phone_numbers:[],
+                emails:[],
+                post_contact_data:{
+                    firstName:"",
+                    lastName:"",
+                    uuid:""
+                },
+                update:false,
+                phone_post_data:{
+                  phone:"",
+                  contact_uuid:""
+                },
+                email_post_data:{
+                  email:"",
+                  contact_uuid:""
+                },
+                contact_error:{
+                    firstName:[],
+                    lastName:[]
+                }
+
+            },
+           watch:{
+                selected_contact:function(val){
+                    console.log(val)
+                    this.viewContactEmails()
+                    this.viewContactPhones()
+                }
+           },
+           methods:{
+              getContacts:function(){
+                  axios.get("{% url "contacts:view_contacts" %}",{
+                        headers: {
+                            'X-CSRFToken': "{{ csrf_token }}"
+                        }
+                    }).then(res => {
+                        this.contacts=res.data
+                        console.log(res)
+                    }).catch(err => {
+                       console.log(err)
+                    })
+              } ,
+
+               createContact:function(){
+
+                     axios.post("{% url "contacts:create_contact" %}",this.post_contact_data,{
+                        headers: {
+                            'X-CSRFToken': "{{ csrf_token }}"
+                        }
+                    }).then(res => {
+                        console.log(res)
+                           Swal.fire({
+                              title: 'Success',
+                              text: 'Contact is created successfully',
+                              icon: 'success'
+                            })
+                         this.getContacts();
+                        $("#new-contact").modal("hide")
+                        this.post_contact_data={
+                             firstName:"",
+                             lastName:"",
+                             uuid:""
+                        }
+                        this.contact_error={
+                            firstName:[],
+                            lastName:[]
+                        }
+                    }).catch(err => {
+                       console.log(err.response)
+                       this.contact_error=err.response.data
+                       //   Swal.fire({
+                       //        title: 'Error Occured try again',
+                       //        text: err.data,
+                       //        icon: 'error'
+                       //  })
+                       //  $("#new-contact").modal("hide")
+                    })
+                  // console.log(this.post_contact_data)
+               },
+               editContact:function(evt){
+                   this.post_contact_data.firstName=evt.firstName
+                   this.post_contact_data.lastName=evt.lastName
+                   this.post_contact_data.uuid=evt.uuid
+                   this.update=true
+                     $("#new-contact").modal()
+               },
+               confirmEdit:function(){
+                  axios.put("{% url "contacts:create_contact" %}",this.post_contact_data,{
+                        headers: {
+                            'X-CSRFToken': "{{ csrf_token }}"
+                        }
+                    }).then(res => {
+                          Swal.fire({
+                              title: 'Success',
+                              text: 'Contact is update successfully',
+                              icon: 'success'
+                            })
+                           this.getContacts();
+                         $("#new-contact").modal("hide")
+                       this.post_contact_data={
+                             firstName:"",
+                             lastName:"",
+                             uuid:""
+                       }
+                        console.log(res)
+                       this.contact_error={
+                             firstName:[],
+                              lastName:[]
+                       }
+                    }).catch(err => {
+                       console.log(err)
+                       this.contact_error=err.response.data
+                        // $("#new-contact").modal("hide")
+                    })
+               },
+               deleteContact:function(evt){
+                  axios.get("/contacts/delete/"+evt.uuid,{
+                        headers: {
+                            'X-CSRFToken': "{{ csrf_token }}"
+                        }
+                    }).then(res => {
+                        Swal.fire({
+                              title: 'Success',
+                              text: 'Contact is update successfully',
+                              icon: 'success'
+                            })
+                           this.getContacts();
+                           this.viewContactEmails()
+                          this.viewContactPhones()
+                    }).catch(err => {
+                       console.log(err)
+                    })
+               },
+               trigerAddPhone:function(){
+                  if(this.selected_contact.firstName){
+                   $("#new-phone").modal()
+                  }else{
+                      Swal.fire({
+                              title: 'Error',
+                              text: 'Please select contact first',
+                              icon: 'error'
+                            })
+                  }
+               },
+                trigerAddEmail:function(){
+                  if(this.selected_contact.firstName){
+                   $("#new-email").modal()
+                  }else{
+                      Swal.fire({
+                              title: 'Error',
+                              text: 'Please select contact first',
+                              icon: 'error'
+                            })
+                  }
+               },
+               details:function(evt){
+                  this.selected_contact=evt
+               },
+
+           //    Create phone
+               createPhone:function(){
+                   this.phone_post_data.contact_uuid=this.selected_contact.uuid
+                   axios.post("/contacts/phones/"+this.selected_contact.uuid,this.phone_post_data,{
+                        headers: {
+                            'X-CSRFToken': "{{ csrf_token }}"
+                        }
+                    }).then(res => {
+                        console.log(res)
+                           Swal.fire({
+                              title: 'Success',
+                              text: 'Contact Phone is added successfully',
+                              icon: 'success'
+                            })
+
+                        $("#new-phone").modal("hide")
+                        this.viewContactPhones()
+                       this.phone_post_data.phone=""
+                    }).catch(err => {
+                       console.log(err.response)
+                         Swal.fire({
+                              title: 'Error Occured try again',
+                              text: err.response.data.msg,
+                              icon: 'error'
+                        })
+                       $("#new-phone").modal("hide")
+                    })
+               },
+               createEmail:function(){
+                   this.email_post_data.contact_uuid=this.selected_contact.uuid
+                   axios.post("/contacts/emails/"+this.selected_contact.uuid,this.email_post_data,{
+                        headers: {
+                            'X-CSRFToken': "{{ csrf_token }}"
+                        }
+                    }).then(res => {
+                        console.log(res)
+                           Swal.fire({
+                              title: 'Success',
+                              text: 'Contact Email is added successfully',
+                              icon: 'success'
+                            })
+                        this.viewContactEmails()
+                        $("#new-email").modal("hide")
+                    }).catch(err => {
+                       console.log(err.response)
+                         Swal.fire({
+                              title: 'Error Occured try again',
+                              text: err.response.data.msg,
+                              icon: 'error'
+                        })
+                       $("#new-email").modal("hide")
+                       this.email_post_data.email=""
+                    })
+               },
+               viewContactPhones:function(){
+                      axios.get("/contacts/phones/"+this.selected_contact.uuid,{
+                        headers: {
+                            'X-CSRFToken': "{{ csrf_token }}"
+                        }
+                    }).then(res => {
+                        console.log(res)
+                          this.phone_numbers=res.data
+                    }).catch(err => {
+                       console.log(err.response)
+                    })
+               },
+               viewContactEmails:function(){
+                     axios.get("/contacts/emails/"+this.selected_contact.uuid,{
+                        headers: {
+                            'X-CSRFToken': "{{ csrf_token }}"
+                        }
+                    }).then(res => {
+                        console.log(res)
+                         this.emails=res.data
+
+                    }).catch(err => {
+                       console.log(err.response)
+
+                    })
+               }
+           },
+           created(){
+             this.getContacts();
+           }
+       })
+    </script>
+{% endblock %}

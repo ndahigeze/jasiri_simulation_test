@@ -1,0 +1,98 @@
+{% extends 'home_layout.html' %}
+{% block title %}SIGNUP{% endblock %}
+{% block home_content %}
+    <div class="container pb-5  py-7 mt-4">
+        <div class="row justify-content-center">
+            <div class="col-lg-6 col-md-8">
+                <div class="card bg-secondary border-0 mb-0">
+                    <div class="card-header d-flex justify-content-center">
+                        <h2>SIGN UP</h2>
+                    </div>
+                    <div class="card-body px-lg-4 py-lg-4">
+                          <form class="site-form" action="{% url 'accounts:signup' %}" method="post">
+                                {% csrf_token %}
+                                <div class="row">
+                                    <div class="col-md-6 form-group mb-3">
+                                        <label for="exampleFormControlInput1">First name</label>
+                                        <input class="form-control form-control-alternative" name="first_name" placeholder="" type="text" required >
+                                        {% for field in form %}
+                                          {% if field.name == "first_name" %}
+                                             {% for error in field.errors %}
+                                                 <div class="h-col-xs-12 h-col-sm-12 h-col-md-12  h-col-lg-12" style="color: red">{{ error }}</div>
+                                             {% endfor %}
+                                          {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                    <div class="col-md-6 form-group mb-3">
+                                            <label for="exampleFormControlInput1">Last name</label>
+                                            <input class="form-control form-control-alternative" name="last_name" placeholder="" type="text" required >
+                                            {% for field in form %}
+                                              {% if field.name == "last_name" %}
+                                                 {% for error in field.errors %}
+                                                     <div class="h-col-xs-12 h-col-sm-12 h-col-md-12  h-col-lg-12" style="color: red">{{ error }}</div>
+                                                 {% endfor %}
+                                              {% endif %}
+                                            {% endfor %}
+                                    </div>
+
+                                    <div class="col-md-6 form-group mb-3">
+                                        <label for="exampleFormControlInput1">Email</label>
+                                        <input class="form-control form-control-alternative" name="email" placeholder="Email" type="email" required >
+                                        {% for field in form %}
+                                          {% if field.name == "email" %}
+                                             {% for error in field.errors %}
+                                                 <div class="h-col-xs-12 h-col-sm-12 h-col-md-12  h-col-lg-12" style="color: red">{{ error }}</div>
+                                             {% endfor %}
+                                          {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                    <div class="col-md-6 form-group mb-3">
+                                        <label for="exampleFormControlInput1">Username</label>
+                                        <input class="form-control form-control-alternative" name="username" placeholder="username" type="text"  required>
+                                        {% for field in form %}
+                                            {% if field.name == "username" %}
+                                                {% for error in field.errors %}
+                                                    <div class="h-col-xs-12 h-col-sm-12 h-col-md-12  h-col-lg-12" style="color: red">{{ error }}</div>
+                                                {% endfor %}
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                    <div  class="col-md-6 form-group">
+                                       <label for="exampleFormControlInput1">Password</label>
+                                        <input class="form-control form-control-alternative" name="password1" placeholder="" type="password"  required>
+                                        {% for field in form %}
+                                                 {% if field.name == "password1" %}
+                                                       {% for error in field.errors %}
+                                                        <div class="h-col-xs-12 h-col-sm-12 h-col-md-12  h-col-lg-12" style="color: red">{{ error }}</div>
+                                                      {% endfor %}
+                                                 {% endif %}
+                                            {% endfor %}
+                                    </div>
+                                    <div class="col-md-6 form-group">
+                                        <label for="exampleFormControlInput1">Confirm Password</label>
+                                        <input class="form-control form-control-alternative" name="password2" placeholder="" type="password" required>
+                                       {% for field in form %}
+                                           {% if field.name == "password2" %}
+                                               {% for error in field.errors %}
+                                                        <span class="text-warning" >{{ error }}</span>
+                                               {% endfor %}
+                                           {% endif %}
+                                       {% endfor %}
+                                    </div>
+                                </div>
+                                <input class="btn btn-block btn btn-primary" type="submit" value="Signup">
+                          </form>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-6">
+                      <a href="#" class="text-light"><small>Forgot password?</small></a>
+                    </div>
+                    <div class="col-6 text-right">
+                       <a href="{% url "accounts:signup" %}" class="text-light"><small>Create new account</small></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

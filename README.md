@@ -4,24 +4,22 @@
 
 # Process and steps for hosting this application on ubuntu server
 
-
 ## Installing required libraries  for environment
 
 ## Use the following commands to install python libaries and nginx webserver 
 
-$sudo apt-get update
-$sudo apt-get install python3-pip python3-dev libpq-dev nginx
+    $sudo apt-get update
+    $sudo apt-get install python3-pip python3-dev libpq-dev nginx
 
 ## Use the following command to install mysql
+    $ sudo apt install mysql-server
  
- $ sudo apt install mysql-server
+##configure mysql 
  
- ##configure mysql 
-     ### run the security script which will take you ththroug a series of prompt for mysql installation's security options
-     
+### run the security script which will take you ththroug a series of prompt for mysql installation's security options 
        $ sudo mysql_secure_installation
      
-     ### create user and grant all privileges
+ ### create user and grant all privileges
      
         $sudo  mysql -u root -p
         
@@ -33,27 +31,26 @@ $sudo apt-get install python3-pip python3-dev libpq-dev nginx
         mysql>FLUSH PRIVILEGES;
         mysql>exit
         $sudo  mysql -u newUser -p
-        * create project datatabase
+   * create project datatabase
         
-        
- 
+
  ## Prepared virtual environment for the project
    * Clone this project in your desire folder
    * Enther int the project root directory
    
    ### Install virtualenv for creating project virtual environment 
-   $ sudo -H pip3 install --upgrade pip
-   $ sudo -H pip3 install virtualenv
+    $ sudo -H pip3 install --upgrade pip
+    $ sudo -H pip3 install virtualenv
    
    ### create virtual environment
-   $ virtualenv myprojectenv
+    $ virtualenv myprojectenv
    
-    ### Activate virtual environment and install gunicorn for running the application
-   $ source myprojectenv/bin/activate
-   $ pip install django gunicorn psycopg2
+   ### Activate virtual environment and install gunicorn for running the application
+    $ source myprojectenv/bin/activate
+    $ pip install django gunicorn psycopg2
    
    ### Install all requirements for the projects 
-   $ pip install -r requirements.txt  
+    $ pip install -r requirements.txt  
    
    ### Prepare .env file for setting required environment variables 
         DB_NAME="YOUR_DB_NAE"
@@ -65,25 +62,25 @@ $sudo apt-get install python3-pip python3-dev libpq-dev nginx
         CSRF_COOKIE_SECURE=True/False
         CSRF_COOKIE_HTTPONLY=True/False
         SESSION_COOKIE_HTTPONLY=True/False
+
+   ### Run migrations for setting the database 
+       $python manage.py makemigrations
+       $python manage.py migrate
+       $python manage.py createsuperuser 
+       $python manage.py collectstatic
   
-  ### Run migrations for setting the database 
-   $python manage.py makemigrations
-   $python manage.py migrate
-   $python manage.py createsuperuser 
-   $python manage.py collectstatic
+   ### Allow pproject port
+       $ sudo ufw allow 8000
+       $ manage.py runserver 0.0.0.0:8000 // for testing if project can run on allowed port
+       $ http://server_domain_or_IP:8000 //visit server name or ip with the port allowed 
+       hit ctl-c for closing tha application
+   
+   ### Test Gunicorn
+      $ gunicorn --bind 0.0.0.0:8000 myproject.wsgi // this will start gunicorn on the same interface application is runnig on 
+      $ http://server_domain_or_IP:8000 //visit server name or ip with the port allowed 
+      * hit ctl-c for closing tha application
   
-  ### Allow pproject port
-  $ sudo ufw allow 8000
-  $ manage.py runserver 0.0.0.0:8000 // for testing if project can run on allowed port
-  $ http://server_domain_or_IP:8000 //visit server name or ip with the port allowed 
-  * hit ctl-c for closing tha application
-  
-  ### Test Gunicorn
-  $ gunicorn --bind 0.0.0.0:8000 myproject.wsgi // this will start gunicorn on the same interface application is runnig on 
-  * $ http://server_domain_or_IP:8000 //visit server name or ip with the port allowed 
-  * hit ctl-c for closing tha application
-  
-  ## Create Gunicorn systme Service file
+  ## Create Gunicorn systmem Service file
     $ sudo nano /etc/systemd/system/gunicorn.service
     * Copy the following into THE FILE
      "  [Unit]
@@ -99,17 +96,18 @@ $sudo apt-get install python3-pip python3-dev libpq-dev nginx
         [Install]
         WantedBy=multi-user.target"
         
-      ### restart gunicorn
+### restart gunicorn
       $ sudo systemctl start gunicorn
       $ sudo systemctl enable gunicorn
       
    ## Confirgure Nginx
    
-   ### create new server block for the project
-   $ sudo nano /etc/nginx/sites-available/myproject
+### create new server block for the project
+    $ sudo nano /etc/nginx/sites-available/myproject
    
    * Copy the following into the file 
-   " server {
+   
+    server {
             listen 80;
             server_name server_domain_or_IP;
 
@@ -117,15 +115,14 @@ $sudo apt-get install python3-pip python3-dev libpq-dev nginx
             location /static/ {
                 root /home/user/projectrootfolder;
             }
-
             location / {
                 include proxy_params;
                 proxy_pass http://unix:/home/user/projectrootfolder/myproject.sock;
             }
-        } "
+        } 
         
         
-      ### link the file created with nginx sites-enabled folder
+   ### link the file created with nginx sites-enabled folder
       $ sudo ln -s /etc/nginx/sites-available/myproject /etc/nginx/sites-enabled
       $ sudo ufw allow 'Nginx Full'  // Allowing nginx in firewall
       $ systemctl restart nginx

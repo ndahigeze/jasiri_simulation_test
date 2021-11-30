@@ -256,6 +256,7 @@
                    this.update=true
                      $("#new-contact").modal()
                },
+               //Confirm editing contact
                confirmEdit:function(){
                   axios.put("{% url "contacts:create_contact" %}",this.post_contact_data,{
                         headers: {

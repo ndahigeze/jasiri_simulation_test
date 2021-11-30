@@ -124,7 +124,7 @@
         
    ### link the file created with nginx sites-enabled folder
       $ sudo ln -s /etc/nginx/sites-available/myproject /etc/nginx/sites-enabled
-      $ sudo ufw allow 'Nginx Full'  // Allowing nginx in firewall
+      $ sudo ufw allow 'Nginx Full'  <!--Allowing nginx in firewall -->
       $ systemctl restart nginx
       
       after this You access the server domain name or ip to access the application 

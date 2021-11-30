@@ -10,7 +10,7 @@
                         <hr/>
                         <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#new-contact" @click="update=false">New Contacts</button>
                         <div class="table-responsive mt-3">
-                            <table class="table table-hover" id="contact_table">
+                            <table class="table table-hover" id="contacts_table">
                                 <thead>
                                   <th>Name</th>
                                   <th>Action</th>
@@ -206,6 +206,7 @@
                         }
                     }).then(res => {
                         this.contacts=res.data
+                         $('#contacts_table').DataTable();
                         console.log(res)
                     }).catch(err => {
                        console.log(err)
@@ -285,14 +286,27 @@
                     })
                },
                deleteContact:function(evt){
-                  axios.get("/contacts/delete/"+evt.uuid,{
+                 Swal.fire({
+                      title: 'Do you want to delete contact?',
+                      showCancelButton: true,
+                      confirmButtonText: 'Yes, Delete',
+                    }).then((result) => {
+                      /* Read more about isConfirmed, isDenied below */
+                      if (result.isConfirmed) {
+                        this.confirmDeleteContact(evt)
+                      }
+                    })
+               },
+
+               confirmDeleteContact:function(evt){
+                   axios.get("/contacts/delete/"+evt.uuid,{
                         headers: {
                             'X-CSRFToken': "{{ csrf_token }}"
                         }
                     }).then(res => {
                         Swal.fire({
                               title: 'Success',
-                              text: 'Contact is update successfully',
+                              text: 'Contact is deleted successfully',
                               icon: 'success'
                             })
                            this.getContacts();
@@ -411,7 +425,8 @@
            },
            created(){
              this.getContacts();
-           }
+           },
+
        })
     </script>
 {% endblock %}

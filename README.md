@@ -1,12 +1,11 @@
 # JUNIOR SOFTWARE DEVELOPER JOB SIMULATION ACTIVITY
 
-## jasir_simulation_test is django project for managing user contacts and their basic informations
+* jasir_simulation_test is django project for managing user contacts and their basic informations
 
 # Process and steps for hosting this application on ubuntu server
 
-## Prepare environament
 
-## Installing required libraries 
+## Installing required libraries  for environment
 
 ## Use the following commands to install python libaries and nginx webserver 
 
@@ -126,7 +125,7 @@ $sudo apt-get install python3-pip python3-dev libpq-dev nginx
         } "
         
         
-      ### link the file created with nginx sites-nabled folder
+      ### link the file created with nginx sites-enabled folder
       $ sudo ln -s /etc/nginx/sites-available/myproject /etc/nginx/sites-enabled
       $ sudo ufw allow 'Nginx Full'  // Allowing nginx in firewall
       $ systemctl restart nginx
